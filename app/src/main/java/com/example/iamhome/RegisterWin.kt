@@ -7,6 +7,7 @@ import android.provider.ContactsContract.CommonDataKinds.Email
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 
 class RegisterWin : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,7 +26,5 @@ class RegisterWin : AppCompatActivity() {
         val userPassword = fieldPassword.text;
         val userCheckPassword = fieldCheckPassword.text;
         val userEmail = fieldEmail.text;
-
-
     }
 }
