@@ -1,10 +1,13 @@
 package com.example.iamhome
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.red
 import java.io.BufferedReader
 import java.io.DataOutputStream
 import java.io.InputStreamReader
@@ -39,5 +42,31 @@ class RegisterWin : AppCompatActivity()
         val userPassword = fieldPassword.text
         val userCheckPassword = fieldCheckPassword.text
         val userEmail = fieldEmail.text
+
+        if(fieldName.text.toString().isNotEmpty() && fieldPassword.text.toString().isNotEmpty() && fieldCheckPassword.text.toString().isNotEmpty() && fieldEmail.text.toString().isNotEmpty())
+        {
+            if(userPassword.toString() != userCheckPassword.toString())
+            {
+                val builder = AlertDialog.Builder(this)
+
+                builder.setTitle("Error")
+                builder.setMessage("Your password does not match")
+
+                val dialog = builder.create()
+                dialog.show()
+            }
+        }
+        else
+        {
+            val builder = AlertDialog.Builder(this)
+
+            builder.setTitle("Error")
+            builder.setMessage("Fill in all the fields")
+
+            val dialog = builder.create()
+            dialog.show()
+        }
+
+
     }
 }
