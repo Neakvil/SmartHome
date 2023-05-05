@@ -1,5 +1,6 @@
 package com.example.iamhome
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
@@ -18,6 +19,15 @@ class RegisterWin : AppCompatActivity()
         setContentView(R.layout.activity_register_win)
     }
 
+    //Відкритя форми входу в акаунт
+    fun openLogIn(view: View)
+    {
+        val randomIntent = Intent(this, Log_in::class.java)
+
+        startActivity(randomIntent)
+    }
+
+    // Считування даних з полей форми
     fun readData(view: View)
     {
         val fieldName = findViewById<EditText>(R.id.textName)

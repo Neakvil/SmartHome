@@ -10,7 +10,8 @@ class Log_in : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_log_in)
     }
-
+    
+    //Відкритя форми реєстрації
     fun openRegister(view: View)
     {
         val randomIntent = Intent(this, RegisterWin::class.java)
