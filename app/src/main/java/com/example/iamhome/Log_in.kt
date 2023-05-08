@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 
 class Log_in : AppCompatActivity() {
 
@@ -28,6 +29,8 @@ class Log_in : AppCompatActivity() {
 
     fun readData(view: View)
     {
+        val randomIntent = Intent(this, MainActivity::class.java)
+
         val fieldName = findViewById<TextView>(R.id.textNameLogIn)
         val fieldPassword = findViewById<TextView>(R.id.textNameLogIn)
 
@@ -60,13 +63,20 @@ class Log_in : AppCompatActivity() {
                         // Збереження токену на пристрої
 
                         // Відкриття іншої активності або виконання іншого коду, що потребує авторизації
+                        startActivity(randomIntent)
                     } else {
                         // Обробка помилок
                     }
                 }
             })
         } else {
-            // Повідомлення про неправильні дані
+            val builder = AlertDialog.Builder(this)
+
+            builder.setTitle("Error")
+            builder.setMessage("Your data was entered incorrectly, please check the spelling!")
+
+            val dialog = builder.create()
+            dialog.show()
         }
         }
     }
