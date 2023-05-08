@@ -55,6 +55,16 @@ class RegisterWin : AppCompatActivity()
                 val dialog = builder.create()
                 dialog.show()
             }
+            if(userEmail.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(userEmail).matches())
+            {
+                val builder = AlertDialog.Builder(this)
+
+                builder.setTitle("Error")
+                builder.setMessage("Your email is wrong!")
+
+                val dialog = builder.create()
+                dialog.show()
+            }
         }
         else
         {
