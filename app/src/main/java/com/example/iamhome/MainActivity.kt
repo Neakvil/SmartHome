@@ -11,6 +11,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
     }
 
+    fun openMain(view: View)
+    {
+        val randomIntent = Intent(this, HomePage::class.java)
+
+        startActivity(randomIntent)
+    }
+
     fun openRegister(view: View)
     {
         val randomIntent = Intent(this, Log_in::class.java)

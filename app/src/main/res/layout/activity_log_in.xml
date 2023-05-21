@@ -28,12 +28,12 @@
         android:background="@drawable/rounded_corner"
         android:ems="10"
         android:hint="Password"
-        android:inputType="numberPassword"
+        android:inputType="textPassword"
         android:textColor="#8D858C"
         android:textColorHint="#8D858C"
         app:layout_constraintEnd_toEndOf="@+id/constraintLayout"
         app:layout_constraintStart_toStartOf="@+id/constraintLayout"
-        app:layout_constraintTop_toBottomOf="@+id/textNameLogIn" />
+        app:layout_constraintTop_toBottomOf="@+id/textEmailLogIn" />
 
     <TextView
         android:id="@+id/textView7"
@@ -47,14 +47,14 @@
         app:layout_constraintTop_toTopOf="@+id/constraintLayout" />
 
     <EditText
-        android:id="@+id/textNameLogIn"
+        android:id="@+id/textEmailLogIn"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_marginTop="50dp"
         android:background="@drawable/rounded_corner"
         android:ems="10"
+        android:hint="Email"
         android:inputType="textPersonName"
-        android:text="Name"
         android:textColor="#8D858C"
         android:textColorHint="#8D858C"
         app:layout_constraintEnd_toEndOf="@+id/constraintLayout"
