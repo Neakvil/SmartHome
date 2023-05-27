@@ -1,5 +1,6 @@
 package com.example.iamhome
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -17,13 +18,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.POST
 
-
 class RegisterWin : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_register_win)
     }
+
 
     //Відкритя форми входу в акаунт
     fun openLogIn(view: View) {
@@ -34,6 +35,8 @@ class RegisterWin : AppCompatActivity() {
 
     // Считування даних з полей форми
     fun readData(view: View) {
+        val randomIntent = Intent(this, Confirmation_Form::class.java)
+
         val fieldName = findViewById<EditText>(R.id.textName)
         val fieldPassword = findViewById<EditText>(R.id.textPassword)
         val fieldCheckPassword = findViewById<EditText>(R.id.textPassword2)
@@ -64,8 +67,15 @@ class RegisterWin : AppCompatActivity() {
                     override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                         if (response.isSuccessful) {
                             // Успішна реєстрація
+                            val sharedPreferences = getSharedPreferences("SaveUserData", Context.MODE_PRIVATE)
+                            val editor = sharedPreferences.edit()
+                            editor.putString("email", userEmail.toString()) // Зберегти email в кеш-пам'яті
+                            editor.apply()
 
                             Toast.makeText(this@RegisterWin, "Registration successful", Toast.LENGTH_SHORT).show()
+
+                            randomIntent.putExtra("email", userEmail.toString()) // Assuming you have the email variable
+                            startActivity(randomIntent)
                         } else {
                             Log.i("RegistrWin", "$response")
                             // Помилка реєстрації

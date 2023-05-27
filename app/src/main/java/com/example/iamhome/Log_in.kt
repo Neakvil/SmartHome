@@ -1,5 +1,6 @@
 package com.example.iamhome
 
+import android.content.Context
 import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException
@@ -19,7 +20,19 @@ class Log_in : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_log_in)
+
+        val sharedPreferences = getSharedPreferences("SaveUserData", Context.MODE_PRIVATE)
+        val email = sharedPreferences.getString("email", "")
+
+        val fieldEmail = findViewById<TextView>(R.id.textEmailLogIn)
+
+        if(email.toString().isNotEmpty())
+        {
+            fieldEmail.text = email.toString()
+        }
     }
+
+
 
     //Відкритя форми реєстрації
     fun openRegister(view: View)
@@ -32,6 +45,7 @@ class Log_in : AppCompatActivity() {
     fun readData(view: View)
     {
         val randomIntent = Intent(this, HomePage::class.java)
+        val randomIntentVerif = Intent(this, Confirmation_Form::class.java)
 
         val fieldEmail = findViewById<TextView>(R.id.textEmailLogIn)
         val fieldPassword = findViewById<TextView>(R.id.textPasswordLogIn)
@@ -77,7 +91,17 @@ class Log_in : AppCompatActivity() {
                         startActivity(randomIntent)
                     } else {
                         // Обробка помилок
-                        Log.i("LogIn", "Errorsssssss")
+                        val errorMessage = json.getString("message")
+                        Log.i("LogIn", "Error message: $errorMessage")
+                        if(errorMessage == "Please verify your email before logging in")
+                        {
+                                randomIntentVerif.putExtra("email", userEmail.toString()) // Assuming you have the email variable
+                            startActivity(randomIntentVerif)
+                        }
+                        // Використовуйте зміну errorMessage для відображення тексту помилки або подальшої обробки
+//                        runOnUiThread {
+//                            Toast.makeText(this@Log_in, errorMessage, Toast.LENGTH_SHORT).show()
+//                        }
                     }
                 }
             })
@@ -92,6 +116,5 @@ class Log_in : AppCompatActivity() {
         }
         }
     }
-    
 
 
