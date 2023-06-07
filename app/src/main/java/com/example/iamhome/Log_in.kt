@@ -9,14 +9,52 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 
 class Log_in : AppCompatActivity() {
 
     private val client = OkHttpClient()
     private var token: String? = null
+
+    private val signInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == RESULT_OK) {
+            val data: Intent? = result.data
+            val requestCode = result.data?.extras?.getInt("requestCode") ?: -1 // Replace "requestCode" with the actual key used when starting the sign-in activity
+            // Handle the result here
+            if (requestCode == RC_SIGN_IN) {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+                try {
+                    val account = task.getResult(ApiException::class.java)
+                    // Authentication successful, get information about the Google account
+                    val email = account?.email
+                    val displayName = account?.displayName
+
+                    Toast.makeText(this, "Welcome, $displayName!", Toast.LENGTH_SHORT).show()
+                } catch (e: ApiException) {
+                    // Authentication failed, display error message
+                    Log.e(TAG, "Authentication error: ${e.statusCode}")
+                    Toast.makeText(this, "Authentication error", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+
+    private lateinit var googleSignInClient: GoogleSignInClient
+
+    companion object {
+        private const val RC_SIGN_IN = 123
+        private const val TAG = "Log_in"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_log_in)
@@ -25,6 +63,15 @@ class Log_in : AppCompatActivity() {
         val email = sharedPreferences.getString("email", "")
 
         val fieldEmail = findViewById<TextView>(R.id.textEmailLogIn)
+        val imageViewClick = findViewById<ImageView>(R.id.signInWithGmail)
+
+        imageViewClick.setOnClickListener { signInWithGoogle() }
+
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestEmail()
+            .build()
+
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
 
         if(email.toString().isNotEmpty())
         {
@@ -32,7 +79,13 @@ class Log_in : AppCompatActivity() {
         }
     }
 
-
+    private fun signInWithGoogle() {
+        Log.i("Log_in", "Start fun")
+        val signInIntent = googleSignInClient.signInIntent
+        startActivity(signInIntent);
+        signInLauncher.launch(signInIntent)
+        Log.i("Log_in", "${signInLauncher.launch(signInIntent)}")
+    }
 
     //Відкритя форми реєстрації
     fun openRegister(view: View)
@@ -98,22 +151,10 @@ class Log_in : AppCompatActivity() {
                                 randomIntentVerif.putExtra("email", userEmail.toString()) // Assuming you have the email variable
                             startActivity(randomIntentVerif)
                         }
-                        // Використовуйте зміну errorMessage для відображення тексту помилки або подальшої обробки
-//                        runOnUiThread {
-//                            Toast.makeText(this@Log_in, errorMessage, Toast.LENGTH_SHORT).show()
-//                        }
                     }
                 }
             })
-        } else {
-            val builder = AlertDialog.Builder(this)
-
-            builder.setTitle("Error")
-            builder.setMessage("Your data was entered incorrectly, please check the spelling!")
-
-            val dialog = builder.create()
-            dialog.show()
-        }
+        } else Toast.makeText(this@Log_in, "Data was incorrect", Toast.LENGTH_SHORT).show()
         }
     }
 

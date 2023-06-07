@@ -39,7 +39,7 @@ class RegisterWin : AppCompatActivity() {
 
         val fieldName = findViewById<EditText>(R.id.textName)
         val fieldPassword = findViewById<EditText>(R.id.textPassword)
-        val fieldCheckPassword = findViewById<EditText>(R.id.textPassword2)
+        val fieldCheckPassword = findViewById<EditText>(R.id.textPasswordConfirm)
         val fieldEmail = findViewById<EditText>(R.id.textEmail)
 
         val userName = fieldName.text.toString()
@@ -70,6 +70,7 @@ class RegisterWin : AppCompatActivity() {
                             val sharedPreferences = getSharedPreferences("SaveUserData", Context.MODE_PRIVATE)
                             val editor = sharedPreferences.edit()
                             editor.putString("email", userEmail.toString()) // Зберегти email в кеш-пам'яті
+                            editor.putString("name", userName.toString()) // Зберегти name в кеш-пам'яті
                             editor.apply()
 
                             Toast.makeText(this@RegisterWin, "Registration successful", Toast.LENGTH_SHORT).show()

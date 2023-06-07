@@ -14,14 +14,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
     }
 
-    fun openScanner(view: View)
-    {
-        //val randomIntent = Intent(this, QRScannerActivity::class.java)
-        val randomIntent = Intent(this, Confirmation_Form::class.java)
-
-        startActivity(randomIntent)
-    }
-
     fun openRegister(view: View)
     {
         val randomIntent = Intent(this, RegisterWin::class.java)

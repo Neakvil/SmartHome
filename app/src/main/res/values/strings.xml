@@ -2,4 +2,27 @@
     <string name="app_name">IAMHOME</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="log_in">Log In</string>
+    <string name="you_are_already_registered">You are already registered?</string>
+    <string name="create">Create</string>
+    <string name="password">Password</string>
+    <string name="email_gmail_com">Email@gmail.com</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="name">Name</string>
+    <string name="register">Register</string>
+    <string name="sign_into_nmanage_your_device">Sign Into \nManage your Device</string>
+    <string name="email">Email</string>
+    <string name="home">HOME</string>
+    <string name="smart">SMART</string>
+    <string name="create_new_account">Create new account:</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="sweet_amp_smart_home">WELCOME \n to \n SWEEME</string>
+    <string name="smart_home_can_change_the_way_you_live_in_the_future">smart home can change the way you live in the future</string>
+    <string name="take_control">Take Control!</string>
+    <string name="check_your_email_and_click_on_the_n_confirmation_link_to_continue">Check your email and click on the \n confirmation link to continue.</string>
+    <string name="confirm">Confirm</string>
+    <string name="we_sent_a_confirmation_email_to">We sent a confirmation email to:</string>
+    <string name="confirm_your_email_addres">Confirm your email addres</string>
+    <string name="get_smart">Get Smart</string>
+    <string name="if_you_want_to_be_smart_n_click_the_button_below">If you want to be smart,\n click the button below.</string>
 </resources>

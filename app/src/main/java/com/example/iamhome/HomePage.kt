@@ -1,51 +1,83 @@
 package com.example.iamhome
 
+import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
+import android.widget.TextView
+import com.example.iamhome.qrscanner.QRScannerActivity
+import okhttp3.Call
+import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import org.json.JSONObject
+import java.io.IOException
 
 class HomePage : AppCompatActivity() {
+
+    private var user_id: Int? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home_page)
 
+        val sharedPreferences = getSharedPreferences("SaveUserData", Context.MODE_PRIVATE)
         val token = intent.getStringExtra("token")
-        val email = intent.getStringExtra("email")
-        Log.i("HomePage", "UserToken:$token UserEmail:$email")
+        val buttonAddDevice = findViewById<Button>(R.id.button)
 
-        getUserIdFromServer(email.toString())
-        Log.i("HomePage", "${getUserIdFromServer(email.toString())} ")
-//        val myDatasource = Device().getAllDevicesForUser()
-//        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
-//
-//        recyclerView.adapter = MyAdapter(this, myDatasource)
-//        recyclerView.setHasFixedSize(true)
-//        recyclerView.layoutManager = LinearLayoutManager(this)
-    }
-}
-fun getUserIdFromServer(email: String): Int {
-    val client = OkHttpClient()
-    val request = Request.Builder()
-        .url("http://192.168.0.192:8080/api/v1/users?email=$email") // Замініть URL на ваш сервер та шлях до ресурсу для отримання інформації про користувачів
-        .build()
+        buttonAddDevice.setOnClickListener { openQrScanner() }
 
-    try {
-        val response: Response = client.newCall(request).execute()
-        val responseBody = response.body?.string()
-
-        // Опрацювання отриманої відповіді
-        val jsonObject = JSONObject(responseBody)
-        val userId = jsonObject.getInt("id") // Передполагається, що відповідь містить JSON з полем "id" для ідентифікатора користувача
-
-        return userId
-
-    } catch (e: Exception) {
-        e.printStackTrace(System.out)
+        sendRequestToServer(token.toString())
     }
 
-    return -1 // Повертаємо -1, якщо ідентифікатор користувача не може бути отриманий
+    private fun openQrScanner(){
+        val randomIntent = Intent(this, QRScannerActivity::class.java)
+
+        startActivity(randomIntent)
+    }
+
+    private fun sendRequestToServer(jwt: String) {
+        val client = OkHttpClient()
+        val url = "http://192.168.0.192:8080/api/v1/decode-jwt" // Replace with your server URL
+        val userName = findViewById<TextView>(R.id.textHelloToUser)
+
+        Log.i("HomePage", "Jwt:$jwt")
+        Log.i("HomePage", "Data:$url")
+        val request = Request.Builder()
+            .url(url)
+            .header("Authorization", "Bearer $jwt")
+            .build()
+        Log.i("HomePage", "Create request")
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                // Handle network failure or server error
+                Log.i("HomePage", "Suck")
+                e.printStackTrace()
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                if (response.isSuccessful) {
+                    val responseData = response.body?.string()
+                    val jsonObject = JSONObject(responseData)
+                    Log.i("HomePage", "Json ${jsonObject}")
+                    // Process the received data here
+                    val userObject = jsonObject.getJSONObject("user")
+                    if (userObject.has("id")) {
+                        user_id = userObject.getInt("id")
+                        userName.text = "Hello, ${userObject.getString("name")}!"
+                        Log.i("HomePage", "User Id $user_id")
+                    } else {
+                        Log.i("HomePage", "Id is not create")
+                    }
+                } else {
+                    // Handle unsuccessful response (e.g., unauthorized access)
+                    // You can check response.code() for the specific HTTP status code
+                }
+                response.close()
+            }
+        })
+    }
 }
