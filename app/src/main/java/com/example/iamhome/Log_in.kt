@@ -12,52 +12,42 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
+import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.auth.api.signin.GoogleSignInResult
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.api.GoogleApiClient
 
-class Log_in : AppCompatActivity() {
+
+@Suppress("DEPRECATION")
+class Log_in : AppCompatActivity(),
+    GoogleApiClient.ConnectionCallbacks,
+    GoogleApiClient.OnConnectionFailedListener {
+
+    private lateinit var googleApiClient: GoogleApiClient
 
     private val client = OkHttpClient()
     private var token: String? = null
 
-    private val signInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == RESULT_OK) {
-            val data: Intent? = result.data
-            val requestCode = result.data?.extras?.getInt("requestCode") ?: -1 // Replace "requestCode" with the actual key used when starting the sign-in activity
-            // Handle the result here
-            if (requestCode == RC_SIGN_IN) {
-                val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-                try {
-                    val account = task.getResult(ApiException::class.java)
-                    // Authentication successful, get information about the Google account
-                    val email = account?.email
-                    val displayName = account?.displayName
-
-                    Toast.makeText(this, "Welcome, $displayName!", Toast.LENGTH_SHORT).show()
-                } catch (e: ApiException) {
-                    // Authentication failed, display error message
-                    Log.e(TAG, "Authentication error: ${e.statusCode}")
-                    Toast.makeText(this, "Authentication error", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }
-
-
-    private lateinit var googleSignInClient: GoogleSignInClient
-
-    companion object {
-        private const val RC_SIGN_IN = 123
-        private const val TAG = "Log_in"
+    companion object{
+        const val REQUEST_CODE_GOOGLE_SIGN_IN = 9001
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_log_in)
+
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestEmail()
+            .build()
+
+        googleApiClient = GoogleApiClient.Builder(this)
+            .addConnectionCallbacks(this)
+            .addOnConnectionFailedListener(this)
+            .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+            .build()
 
         val sharedPreferences = getSharedPreferences("SaveUserData", Context.MODE_PRIVATE)
         val email = sharedPreferences.getString("email", "")
@@ -65,13 +55,7 @@ class Log_in : AppCompatActivity() {
         val fieldEmail = findViewById<TextView>(R.id.textEmailLogIn)
         val imageViewClick = findViewById<ImageView>(R.id.signInWithGmail)
 
-        imageViewClick.setOnClickListener { signInWithGoogle() }
-
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestEmail()
-            .build()
-
-        googleSignInClient = GoogleSignIn.getClient(this, gso)
+        imageViewClick.setOnClickListener {  signInWithGoogle() }
 
         if(email.toString().isNotEmpty())
         {
@@ -80,11 +64,43 @@ class Log_in : AppCompatActivity() {
     }
 
     private fun signInWithGoogle() {
-        Log.i("Log_in", "Start fun")
-        val signInIntent = googleSignInClient.signInIntent
-        startActivity(signInIntent);
-        signInLauncher.launch(signInIntent)
-        Log.i("Log_in", "${signInLauncher.launch(signInIntent)}")
+        val signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient)
+        startActivityForResult(signInIntent, REQUEST_CODE_GOOGLE_SIGN_IN)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_CODE_GOOGLE_SIGN_IN) {
+            val result = data?.let { Auth.GoogleSignInApi.getSignInResultFromIntent(it) }
+            if (result != null) {
+                handleGoogleSignInResult(result)
+            }
+        }
+    }
+
+    private fun handleGoogleSignInResult(result: GoogleSignInResult) {
+        if (result.isSuccess) {
+            val account = result.signInAccount
+
+            val randomIntent = Intent(this, HomePage::class.java)
+            startActivity(randomIntent)
+
+            val googleId = account?.id ?: ""
+            Log.i("Log_in", "Google id = $googleId")
+            val googleFirstName = account?.givenName ?: ""
+            Log.i("Log_in", "Google FirstName = $googleFirstName")
+            val googleLastName = account?.familyName ?: ""
+            Log.i("Log_in", googleLastName)
+            val googleEmail = account?.email ?: ""
+            Log.i("Log_in", googleEmail)
+            val googleProfilePicURL = account?.photoUrl.toString()
+            Log.i("Log_in", googleProfilePicURL)
+            val googleIdToken = account?.idToken ?: ""
+            Log.i("Log_in", googleIdToken)
+        } else {
+            // Sign-in failed, handle accordingly
+        }
     }
 
     //Відкритя форми реєстрації
@@ -156,6 +172,18 @@ class Log_in : AppCompatActivity() {
             })
         } else Toast.makeText(this@Log_in, "Data was incorrect", Toast.LENGTH_SHORT).show()
         }
+
+    override fun onConnected(p0: Bundle?) {
+        TODO("Not yet implemented")
     }
+
+    override fun onConnectionSuspended(p0: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onConnectionFailed(p0: ConnectionResult) {
+        TODO("Not yet implemented")
+    }
+}
 
 

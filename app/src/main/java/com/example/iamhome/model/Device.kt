@@ -1,3 +1,3 @@
-package com.example.iamhome.data
+package com.example.iamhome.model
 
 data class Device(val name: String, val type: String)

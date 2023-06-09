@@ -7,6 +7,11 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.example.iamhome.adapter.DeviceAdapter
+import com.example.iamhome.data.Datasource
+import com.example.iamhome.data.LoadUserDeviceCallback
+import com.example.iamhome.model.Device
 import com.example.iamhome.qrscanner.QRScannerActivity
 import okhttp3.Call
 import okhttp3.Callback
@@ -24,13 +29,29 @@ class HomePage : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home_page)
 
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewDevices)
         val sharedPreferences = getSharedPreferences("SaveUserData", Context.MODE_PRIVATE)
         val token = intent.getStringExtra("token")
         val buttonAddDevice = findViewById<Button>(R.id.button)
 
         buttonAddDevice.setOnClickListener { openQrScanner() }
 
-        sendRequestToServer(token.toString())
+        val myDatasource = Datasource()
+        myDatasource.loadUserDevice(token.toString(), object: LoadUserDeviceCallback{
+            override fun onUserDeviceLoaded(deviceList: List<Device>) {
+                // Оновити адаптер з отриманим списком пристроїв
+                recyclerView.adapter = DeviceAdapter(deviceList)
+                Log.i("HomePage", " device List $deviceList")
+                recyclerView.setHasFixedSize(true)
+            }
+
+            override fun onUserDeviceLoadError(error: String) {
+                // Обробити помилку завантаження даних
+                Log.i("HomePage", "Error loading user devices: $error")
+            }
+        })
+
+        //sendRequestToServer(token.toString())
     }
 
     private fun openQrScanner(){

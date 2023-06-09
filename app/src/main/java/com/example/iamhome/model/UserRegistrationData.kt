@@ -1,4 +1,4 @@
-package com.example.iamhome.data
+package com.example.iamhome.model
 
 data class UserRegistrationData(
     val name: String,
