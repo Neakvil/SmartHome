@@ -16,6 +16,13 @@ interface LoadUserDeviceCallback {
 }
 
 class Datasource {
+
+    fun loadDevice(): List<Device>{
+        return listOf<Device>(
+            Device("string", "1"),
+            Device("camEra","2")
+        )
+    }
     fun loadUserDevice(token: String, callback: LoadUserDeviceCallback) {
         val client = OkHttpClient()
         val url = "http://192.168.0.192:8080/api/v1/devices/get-devices-by-user-id"

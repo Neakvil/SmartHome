@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.iamhome.adapter.DeviceAdapter
 import com.example.iamhome.data.Datasource
@@ -30,19 +31,23 @@ class HomePage : AppCompatActivity() {
         setContentView(R.layout.activity_home_page)
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewDevices)
-        val sharedPreferences = getSharedPreferences("SaveUserData", Context.MODE_PRIVATE)
-        val token = intent.getStringExtra("token")
-        val buttonAddDevice = findViewById<Button>(R.id.button)
+        val layoutManager = LinearLayoutManager(this)
+        recyclerView.layoutManager = layoutManager
+        recyclerView.setHasFixedSize(true)
 
+        val buttonAddDevice = findViewById<Button>(R.id.button)
         buttonAddDevice.setOnClickListener { openQrScanner() }
 
+        val token = intent.getStringExtra("token")
+
+
         val myDatasource = Datasource()
-        myDatasource.loadUserDevice(token.toString(), object: LoadUserDeviceCallback{
+
+        myDatasource.loadUserDevice(token.toString(), object: LoadUserDeviceCallback {
             override fun onUserDeviceLoaded(deviceList: List<Device>) {
                 // Оновити адаптер з отриманим списком пристроїв
-                recyclerView.adapter = DeviceAdapter(deviceList)
                 Log.i("HomePage", " device List $deviceList")
-                recyclerView.setHasFixedSize(true)
+                recyclerView.adapter = DeviceAdapter(deviceList)
             }
 
             override fun onUserDeviceLoadError(error: String) {
@@ -51,7 +56,7 @@ class HomePage : AppCompatActivity() {
             }
         })
 
-        //sendRequestToServer(token.toString())
+        sendRequestToServer(token.toString())
     }
 
     private fun openQrScanner(){
