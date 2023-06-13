@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.iamhome.adapter.DeviceAdapter
@@ -25,7 +26,6 @@ import java.io.IOException
 class HomePage : AppCompatActivity() {
 
     private var user_id: Int? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home_page)
@@ -35,11 +35,10 @@ class HomePage : AppCompatActivity() {
         recyclerView.layoutManager = layoutManager
         recyclerView.setHasFixedSize(true)
 
-        val buttonAddDevice = findViewById<Button>(R.id.button)
-        buttonAddDevice.setOnClickListener { openQrScanner() }
-
         val token = intent.getStringExtra("token")
 
+        val buttonAddDevice = findViewById<Button>(R.id.button)
+        buttonAddDevice.setOnClickListener { openQrScanner(token.toString()) }
 
         val myDatasource = Datasource()
 
@@ -47,7 +46,15 @@ class HomePage : AppCompatActivity() {
             override fun onUserDeviceLoaded(deviceList: List<Device>) {
                 // Оновити адаптер з отриманим списком пристроїв
                 Log.i("HomePage", " device List $deviceList")
-                recyclerView.adapter = DeviceAdapter(deviceList)
+
+                var adapter = DeviceAdapter(deviceList)
+                recyclerView.adapter = adapter
+                adapter.setOnItemClickListener(object :  DeviceAdapter.onItemClickListener {
+
+                    override fun onItemClick(position: Int) {
+                        Toast.makeText(this@HomePage, "Your Clicked on item no. $position", Toast.LENGTH_SHORT).show()
+                    }
+                })
             }
 
             override fun onUserDeviceLoadError(error: String) {
@@ -59,9 +66,9 @@ class HomePage : AppCompatActivity() {
         sendRequestToServer(token.toString())
     }
 
-    private fun openQrScanner(){
+    private fun openQrScanner(token:String){
         val randomIntent = Intent(this, QRScannerActivity::class.java)
-
+        randomIntent.putExtra("token", token)
         startActivity(randomIntent)
     }
 

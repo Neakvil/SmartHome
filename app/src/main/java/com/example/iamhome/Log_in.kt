@@ -64,8 +64,14 @@ class Log_in : AppCompatActivity(),
     }
 
     private fun signInWithGoogle() {
-        val signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient)
-        startActivityForResult(signInIntent, REQUEST_CODE_GOOGLE_SIGN_IN)
+        val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestEmail()
+            .build()
+
+        val googleSignInClient = GoogleSignIn.getClient(this, signInOptions)
+        googleSignInClient.signOut().addOnCompleteListener {
+            startActivityForResult(googleSignInClient.signInIntent, REQUEST_CODE_GOOGLE_SIGN_IN)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -98,6 +104,42 @@ class Log_in : AppCompatActivity(),
             Log.i("Log_in", googleProfilePicURL)
             val googleIdToken = account?.idToken ?: ""
             Log.i("Log_in", googleIdToken)
+
+            // Виконання запиту на сервер для створення аккаунта
+            val url = "http://192.168.0.192:8080/api/v1/google?email=$googleEmail"
+            val request = Request.Builder()
+                .url(url)
+                .get()
+                .build()
+
+            Log.i("Log_in", "request$request")
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    // Обробка помилок під час виконання запиту
+                    runOnUiThread {
+                        Toast.makeText(this@Log_in, "Failed to create account", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+
+                override fun onResponse(call: Call, response: Response) {
+                    // Обробка відповіді від сервера
+                    val responseBody = response.body?.string()
+                    if (response.isSuccessful) {
+                        // Аккаунт успішно створений
+                        runOnUiThread {
+                            Log.i("Log_in", "$responseBody")
+                            val randomIntent = Intent(this@Log_in, HomePage::class.java)
+                            startActivity(randomIntent)
+                        }
+                    } else {
+                        // Помилка створення аккаунта
+                        runOnUiThread {
+                            Toast.makeText(this@Log_in, "Failed to create account", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            })
         } else {
             // Sign-in failed, handle accordingly
         }

@@ -65,18 +65,6 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:srcCompat="@drawable/background" />
 
-            <Button
-                android:id="@+id/button"
-                android:layout_width="130dp"
-                android:layout_height="88dp"
-                android:layout_marginBottom="48dp"
-                android:onClick="openQrScanner"
-                android:text="Button"
-                app:layout_constraintBottom_toBottomOf="@+id/recyclerViewDevices"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.48"
-                app:layout_constraintStart_toStartOf="parent" />
-
         </LinearLayout>
 
     </LinearLayout>
@@ -90,12 +78,26 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewDevices"
-            android:layout_width="411dp"
+            android:layout_width="match_parent"
             android:layout_height="655dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:layout_gravity="right"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/round_button"
+        android:text="+"
+        app:layout_constraintBottom_toBottomOf="@+id/recyclerViewDevices"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.48"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </LinearLayout>
