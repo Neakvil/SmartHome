@@ -8,6 +8,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.iamhome.adapter.DeviceAdapter
@@ -38,7 +39,7 @@ class HomePage : AppCompatActivity() {
         val token = intent.getStringExtra("token")
 
         val buttonAddDevice = findViewById<Button>(R.id.button)
-        buttonAddDevice.setOnClickListener { openQrScanner(token.toString()) }
+        buttonAddDevice.setOnClickListener { showPopupDialog(token.toString()) }
 
         val myDatasource = Datasource()
 
@@ -69,6 +70,24 @@ class HomePage : AppCompatActivity() {
         })
 
         sendRequestToServer(token.toString())
+    }
+
+    private fun showPopupDialog(token: String) {
+        val actions = arrayOf("Added new device", "Scanner QR code")
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Select an action")
+            .setItems(actions) { _, which ->
+                when (which) {
+                    0 -> openAddNewDevice()
+                    1 -> openQrScanner(token)
+                }
+            }
+            .show()
+    }
+
+    private fun openAddNewDevice() {
+        val intent = Intent(this, NewDevice::class.java)
+        startActivity(intent)
     }
 
     private fun openQrScanner(token:String){

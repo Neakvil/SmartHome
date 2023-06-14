@@ -26,4 +26,11 @@
     <string name="get_smart">Get Smart</string>
     <string name="if_you_want_to_be_smart_n_click_the_button_below">If you want to be smart,\n click the button below.</string>
     <string name="server_client_id">359613981396-1sfmsp0qjfgmmp19rdm2p7kggnl05699.apps.googleusercontent.com</string>
+    <string name="send_qr_to_gmail">Send qr to gmail</string>
+    <string name="device_mpn">Device MPN</string>
+    <string name="device_type_1_or_2">Device Type(1 or 2)</string>
+    <string name="device_name">Device Name</string>
+    <string name="added_new_device">Added new device</string>
+    <string name="new_device">NEW DEVICE</string>
+    <string name="added">ADDED</string>
 </resources>

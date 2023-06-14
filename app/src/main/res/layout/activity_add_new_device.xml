@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <!-- Верхня частина екрану -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="left|bottom"
+        android:background="@drawable/layered_background"
+        tools:ignore="RtlHardcoded">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/added"
+            android:textColor="@color/black"
+            android:textSize="36sp"
+            android:layout_marginLeft="20dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/new_device"
+            android:textColor="@color/black"
+            android:textSize="56sp"
+            android:textStyle="bold"
+            android:layout_marginLeft="30dp"/>
+
+    </LinearLayout>
+
+    <!-- Нижня частина екрану -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:background="@drawable/gradient_background">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Added your new device "
+            android:textSize="16sp"
+            android:textColor="#8A7051"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"/>
+
+        <EditText
+            android:id="@+id/editTextDeviceName"
+            android:layout_width="257dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:background="@drawable/border"
+            android:layout_marginTop="10dp"
+            android:drawablePadding="8dp"
+            android:ems="10"
+            android:hint="@string/device_name"
+            android:inputType="textPersonName"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:textColor="#593A16"
+            android:textColorHint="#593A16"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="TextFields" />
+
+        <EditText
+            android:id="@+id/editTextDeviceType"
+            android:layout_width="257dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:background="@drawable/border"
+            android:layout_marginTop="10dp"
+            android:drawablePadding="8dp"
+            android:ems="10"
+            android:hint="@string/device_type_1_or_2"
+            android:inputType="textPersonName"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:textColor="#593A16"
+            android:textColorHint="#593A16"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editTextDeviceName" />
+
+        <EditText
+            android:id="@+id/editTextDeviceMPN"
+            android:layout_width="257dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:background="@drawable/border"
+            android:layout_marginTop="10dp"
+            android:drawablePadding="8dp"
+            android:ems="10"
+            android:hint="@string/device_mpn"
+            android:inputType="textPersonName"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:textColor="#593A16"
+            android:textColorHint="#593A16"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editTextDeviceType" />
+
+        <Button
+            android:id="@+id/buttonAddedNewDevice"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="25dp"
+            android:alpha="1"
+            android:backgroundTint="#FDA43C"
+            android:text="@string/added_new_device"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            tools:layout_editor_absoluteX="94dp"
+            tools:layout_editor_absoluteY="306dp" />
+
+
+
+
+    </LinearLayout>
+
+</LinearLayout>
