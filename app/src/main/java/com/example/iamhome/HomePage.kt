@@ -52,7 +52,12 @@ class HomePage : AppCompatActivity() {
                 adapter.setOnItemClickListener(object :  DeviceAdapter.onItemClickListener {
 
                     override fun onItemClick(position: Int) {
-                        Toast.makeText(this@HomePage, "Your Clicked on item no. $position", Toast.LENGTH_SHORT).show()
+                        //Toast.makeText(this@HomePage, "Your Clicked on item no. $position", Toast.LENGTH_SHORT).show()
+
+                        val intent = Intent(this@HomePage, DeviceInformation::class.java)
+                        intent.putExtra("deviceName", deviceList[position].name)
+                        intent.putExtra("deviceType", deviceList[position].type)
+                        startActivity(intent)
                     }
                 })
             }
