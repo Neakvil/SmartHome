@@ -53,15 +53,12 @@ class RegisterWin : AppCompatActivity() {
             } else if (userEmail.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(userEmail).matches()) {
                 Toast.makeText(this, "Your email is wrong!", Toast.LENGTH_SHORT).show()
             } else {
-                Log.i("RegistrWin", "StartConnectToServer")
                 val userData = UserRegistrationData(userName, userEmail, userPassword)
-                Log.i("RegistrWin", "AplyUserData")
                 val apiService = Retrofit.Builder()
                     .baseUrl("http://192.168.0.192:8080/api/v1/") // Замініть на URL вашого сервера
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
                     .create(ApiService::class.java)
-                Log.i("RegistrWin", "ConnectToServer $userData")
                 val call = apiService.registerUser(userData)
                 call.enqueue(object : Callback<ResponseBody> {
                     override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
@@ -78,7 +75,6 @@ class RegisterWin : AppCompatActivity() {
                             randomIntent.putExtra("email", userEmail.toString()) // Assuming you have the email variable
                             startActivity(randomIntent)
                         } else {
-                            Log.i("RegistrWin", "$response")
                             // Помилка реєстрації
                             Toast.makeText(this@RegisterWin, "Registration failed", Toast.LENGTH_SHORT).show()
                         }

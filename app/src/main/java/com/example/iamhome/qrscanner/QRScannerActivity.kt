@@ -1,6 +1,7 @@
 package com.example.iamhome.qrscanner
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.iamhome.HomePage
 import com.google.zxing.Result
 import me.dm7.barcodescanner.zxing.ZXingScannerView
 import okhttp3.Call
@@ -90,12 +92,13 @@ class QRScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
                             "данні успушно надіслані",
                             Toast.LENGTH_SHORT
                         ).show()
+                        finish();
                     }
                 }else{
                     runOnUiThread {
                         Toast.makeText(
                             this@QRScannerActivity,
-                            "данні не успушно надіслані",
+                            "You already have this device!",
                             Toast.LENGTH_SHORT
                         ).show()
                     }

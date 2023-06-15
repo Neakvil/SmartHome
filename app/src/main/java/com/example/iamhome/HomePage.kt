@@ -72,6 +72,48 @@ class HomePage : AppCompatActivity() {
         sendRequestToServer(token.toString())
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewDevices)
+        val layoutManager = LinearLayoutManager(this)
+        recyclerView.layoutManager = layoutManager
+        recyclerView.setHasFixedSize(true)
+
+        val token = intent.getStringExtra("token")
+        Log.i("Token" , "$token")
+
+        val myDatasource = Datasource()
+
+        myDatasource.loadUserDevice(token.toString(), object: LoadUserDeviceCallback {
+            override fun onUserDeviceLoaded(deviceList: List<Device>) {
+                // Оновити адаптер з отриманим списком пристроїв
+                Log.i("HomePage", " device List $deviceList")
+
+                var adapter = DeviceAdapter(deviceList)
+                recyclerView.adapter = adapter
+                adapter.setOnItemClickListener(object :  DeviceAdapter.onItemClickListener {
+
+                    override fun onItemClick(position: Int) {
+                        //Toast.makeText(this@HomePage, "Your Clicked on item no. $position", Toast.LENGTH_SHORT).show()
+
+                        val intent = Intent(this@HomePage, DeviceInformation::class.java)
+                        intent.putExtra("deviceName", deviceList[position].name)
+                        intent.putExtra("deviceType", deviceList[position].type)
+                        startActivity(intent)
+                    }
+                })
+            }
+
+            override fun onUserDeviceLoadError(error: String) {
+                // Обробити помилку завантаження даних
+                Log.i("HomePage", "Error loading user devices: $error")
+            }
+        })
+        sendRequestToServer(token.toString())
+
+    }
+
     private fun showPopupDialog(token: String) {
         val actions = arrayOf("Added new device", "Scanner QR code")
         val builder = AlertDialog.Builder(this)
