@@ -33,6 +33,6 @@
     <string name="added_new_device">Added new device</string>
     <string name="new_device">NEW DEVICE</string>
     <string name="added">ADDED</string>
-    <string name="devicename">DeviceName</string>
-    <string name="devicetype">DeviceType</string>
+    <string name="devicename">DeviceName: </string>
+    <string name="devicetype">DeviceType: </string>
 </resources>

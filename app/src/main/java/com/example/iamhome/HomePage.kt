@@ -108,6 +108,12 @@ class HomePage : AppCompatActivity() {
             override fun onUserDeviceLoadError(error: String) {
                 // Обробити помилку завантаження даних
                 Log.i("HomePage", "Error loading user devices: $error")
+                // Додайте блок catch для перехоплення винятків
+                try {
+                    throw Exception(error) // Створіть виняток для отримання додаткової інформації про помилку
+                } catch (e: Exception) {
+                    e.printStackTrace() // Виведіть стек викликів винятків у логи
+                }
             }
         })
         sendRequestToServer(token.toString())
