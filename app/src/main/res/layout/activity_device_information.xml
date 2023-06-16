@@ -165,13 +165,13 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="3"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            tools:ignore="MissingClass">
 
-            <com.example.iamhome.TemperatureGraphSurfaceView
-                android:id="@+id/graphSurfaceView"
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/barChart"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:ignore="MissingClass" />
+                android:layout_height="match_parent" />
 
         </LinearLayout>
 

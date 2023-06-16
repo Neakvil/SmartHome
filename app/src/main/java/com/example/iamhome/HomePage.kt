@@ -1,5 +1,6 @@
 package com.example.iamhome
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -9,6 +10,8 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.iamhome.adapter.DeviceAdapter
@@ -41,82 +44,66 @@ class HomePage : AppCompatActivity() {
         val buttonAddDevice = findViewById<Button>(R.id.button)
         buttonAddDevice.setOnClickListener { showPopupDialog(token.toString()) }
 
-        val myDatasource = Datasource()
-
-        myDatasource.loadUserDevice(token.toString(), object: LoadUserDeviceCallback {
-            override fun onUserDeviceLoaded(deviceList: List<Device>) {
-                // Оновити адаптер з отриманим списком пристроїв
-                Log.i("HomePage", " device List $deviceList")
-
-                var adapter = DeviceAdapter(deviceList)
-                recyclerView.adapter = adapter
-                adapter.setOnItemClickListener(object :  DeviceAdapter.onItemClickListener {
-
-                    override fun onItemClick(position: Int) {
-                        //Toast.makeText(this@HomePage, "Your Clicked on item no. $position", Toast.LENGTH_SHORT).show()
-
-                        val intent = Intent(this@HomePage, DeviceInformation::class.java)
-                        intent.putExtra("deviceName", deviceList[position].name)
-                        intent.putExtra("deviceType", deviceList[position].type)
-                        startActivity(intent)
-                    }
-                })
-            }
-
-            override fun onUserDeviceLoadError(error: String) {
-                // Обробити помилку завантаження даних
-                Log.i("HomePage", "Error loading user devices: $error")
-            }
-        })
-
-        sendRequestToServer(token.toString())
+        runOnUiThread {
+            sendRequestToServer(token.toString())
+        }
     }
 
     override fun onStart() {
         super.onStart()
 
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewDevices)
-        val layoutManager = LinearLayoutManager(this)
-        recyclerView.layoutManager = layoutManager
-        recyclerView.setHasFixedSize(true)
+            Log.i("HomePageStart", "Start onStart")
+            val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewDevices)
+            val layoutManager = LinearLayoutManager(this)
+            recyclerView.layoutManager = layoutManager
 
-        val token = intent.getStringExtra("token")
-        Log.i("Token" , "$token")
+            val token = intent.getStringExtra("token")
+            Log.i("Token" , "$token")
 
-        val myDatasource = Datasource()
+            val myDatasource = Datasource()
 
-        myDatasource.loadUserDevice(token.toString(), object: LoadUserDeviceCallback {
-            override fun onUserDeviceLoaded(deviceList: List<Device>) {
-                // Оновити адаптер з отриманим списком пристроїв
-                Log.i("HomePage", " device List $deviceList")
+            myDatasource.loadUserDevice(token.toString(), object: LoadUserDeviceCallback {
+                override fun onUserDeviceLoaded(deviceList: List<Device>) {
+                    // Оновити адаптер з отриманим списком пристроїв
+                    runOnUiThread {
+                        // Оновити адаптер з отриманим списком пристроїв
+                        Log.i("HomePage", " device List $deviceList")
 
-                var adapter = DeviceAdapter(deviceList)
-                recyclerView.adapter = adapter
-                adapter.setOnItemClickListener(object :  DeviceAdapter.onItemClickListener {
+                        val adapter = DeviceAdapter(deviceList)
+                        recyclerView.adapter = adapter
+                        adapter.setOnItemClickListener(object :  DeviceAdapter.onItemClickListener {
+                            override fun onItemClick(position: Int) {
+                                val intent = Intent(this@HomePage, DeviceInformation::class.java)
+                                intent.putExtra("deviceName", deviceList[position].name)
+                                intent.putExtra("deviceType", deviceList[position].type)
+                                intent.putExtra("token", token)
+                                startActivity(intent)
+                            }
+                        })
 
-                    override fun onItemClick(position: Int) {
-                        //Toast.makeText(this@HomePage, "Your Clicked on item no. $position", Toast.LENGTH_SHORT).show()
-
-                        val intent = Intent(this@HomePage, DeviceInformation::class.java)
-                        intent.putExtra("deviceName", deviceList[position].name)
-                        intent.putExtra("deviceType", deviceList[position].type)
-                        startActivity(intent)
+                        val backgroundDrawable = if (deviceList.isNotEmpty()) {
+                            null // Якщо список не порожній, задній фон буде видалено
+                        } else {
+                            ContextCompat.getDrawable(this@HomePage, R.drawable.document_data_not_found) // Якщо список порожній, використовуватиметься визначений фон
+                        }
+                        recyclerView.background = backgroundDrawable
                     }
-                })
-            }
-
-            override fun onUserDeviceLoadError(error: String) {
-                // Обробити помилку завантаження даних
-                Log.i("HomePage", "Error loading user devices: $error")
-                // Додайте блок catch для перехоплення винятків
-                try {
-                    throw Exception(error) // Створіть виняток для отримання додаткової інформації про помилку
-                } catch (e: Exception) {
-                    e.printStackTrace() // Виведіть стек викликів винятків у логи
                 }
-            }
-        })
-        sendRequestToServer(token.toString())
+
+                override fun onUserDeviceLoadError(error: String) {
+                    // Обробити помилку завантаження даних
+                    Log.i("HomePage", "Error loading user devices: $error")
+                    // Додайте блок catch для перехоплення винятків
+                    try {
+                        throw Exception(error) // Створіть виняток для отримання додаткової інформації про помилку
+                    } catch (e: Exception) {
+                        e.printStackTrace() // Виведіть стек викликів винятків у логи
+                        Log.e("HomePageEx","Exception", e)
+                    }
+                }
+            })
+
+            sendRequestToServer(token.toString())
 
     }
 
@@ -136,6 +123,7 @@ class HomePage : AppCompatActivity() {
     private fun openAddNewDevice() {
         val intent = Intent(this, NewDevice::class.java)
         startActivity(intent)
+
     }
 
     private fun openQrScanner(token:String){
@@ -171,12 +159,14 @@ class HomePage : AppCompatActivity() {
                     // Process the received data here
                     val userObject = jsonObject.getJSONObject("user")
                     if (userObject.has("id")) {
-                        user_id = userObject.getInt("id")
-                        userName.text = "Hello, ${userObject.getString("name")}!"
-                        Log.i("HomePage", "User Id $user_id")
-                    } else {
+                        runOnUiThread{user_id = userObject.getInt("id")
+                            userName.text = "Hello, ${userObject.getString("name")}!"
+                            Log.i("HomePage", "User Id $user_id")
+                        }
+                    }else {
                         Log.i("HomePage", "Id is not create")
                     }
+
                 } else {
                     // Handle unsuccessful response (e.g., unauthorized access)
                     // You can check response.code() for the specific HTTP status code

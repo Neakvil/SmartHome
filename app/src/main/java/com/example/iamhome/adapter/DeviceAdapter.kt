@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.iamhome.R
@@ -29,6 +30,7 @@ class DeviceAdapter(private val dataset: List<Device>): RecyclerView.Adapter<Dev
 
             val nameTextView: TextView = view.findViewById(R.id.device_name_textView)
             val typeTextView: TextView = view.findViewById(R.id.device_type_textView)
+            val imageDevice: ImageView = view.findViewById(R.id.imageViewDevice)
 
             init {
 
@@ -57,5 +59,6 @@ class DeviceAdapter(private val dataset: List<Device>): RecyclerView.Adapter<Dev
         holder.nameTextView.text = item.name
         Log.i("DeviceAdapter", "${item.name}")
         holder.typeTextView.text = item.type
+        holder.imageDevice.setImageResource(R.drawable.humid_icon_0)
     }
 }

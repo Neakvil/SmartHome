@@ -1,29 +1,47 @@
 package com.example.iamhome
 
-import androidx.appcompat.app.AppCompatActivity
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.SurfaceHolder
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import java.util.Random
+import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.FormBody
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import java.io.IOException
 
+@Suppress("DEPRECATION")
 class DeviceInformation : AppCompatActivity() {
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
+    }
 
-    private lateinit var temperatureGraphSurfaceView: TemperatureGraphSurfaceView
+    private lateinit var barChart: BarChart
+    private val client = OkHttpClient()
+
+    companion object{
+        const val oneHourTemperatureInformation = 60
+        const val twoHourTemperatureInformation = 120
+        const val fourHourTemperatureInformation = 240
+        const val eightHourTemperatureInformation = 480
+    }
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_device_information)
 
-        Log.i("Temperature","Start on create")
-        temperatureGraphSurfaceView = findViewById(R.id.graphSurfaceView)
-
-        Log.i("Temperature","temperatureGraphSurfaceView = $temperatureGraphSurfaceView")
         val swipeRefreshLayout: SwipeRefreshLayout = findViewById(R.id.swipeRefreshLayout)
         val deviceName : TextView = findViewById(R.id.textViewDeviceName)
         val deviceType : TextView = findViewById(R.id.textViewDeviceType)
@@ -42,36 +60,32 @@ class DeviceInformation : AppCompatActivity() {
 
         deviceName.text = intent.getStringExtra("deviceName")
         deviceType.text = intent.getStringExtra("deviceType")
+        val token = intent.getStringExtra("token")
 
-        // Отримання даних про температуру за минулий тиждень
-        val temperatureData = getTemperatureData()
-        Log.i("Temperature","temperatureData = $temperatureData")
-        // Встановлення даних в SurfaceView
-        temperatureGraphSurfaceView.setTemperatureData(temperatureData)
+        updateDataInChartsTemperature(token.toString())
 
-        // Виклик drawTemperatureGraph() після повної ініціалізації SurfaceView
-        temperatureGraphSurfaceView.holder.addCallback(object : SurfaceHolder.Callback {
-            override fun surfaceCreated(holder: SurfaceHolder) {
-                GlobalScope.launch {
-                    temperatureGraphSurfaceView.drawTemperatureGraph()
-                    Log.i("Temperature", "${temperatureGraphSurfaceView.drawTemperatureGraph()}")
-                }
-            }
+        barChart = findViewById(R.id.barChart)
 
-            override fun surfaceChanged(
-                holder: SurfaceHolder,
-                format: Int,
-                width: Int,
-                height: Int
-            ) {
-                GlobalScope.launch {
-                    temperatureGraphSurfaceView.drawTemperatureGraph()
-                }
-            }
+        // Приклад даних температури
+        val temperatures = listOf(20f, 25f, 22f, 18f, 23f)
 
-            override fun surfaceDestroyed(holder: SurfaceHolder) {
-            }
-        })
+        val entries = ArrayList<BarEntry>()
+        for (i in temperatures.indices) {
+            entries.add(BarEntry(i.toFloat(), temperatures[i]))
+        }
+
+        val dataSet = BarDataSet(entries, "Температура")
+        dataSet.color = Color.BLUE
+
+        val barData = BarData(dataSet)
+        barChart.data = barData
+
+        // Налаштування графіку
+        barChart.description.isEnabled = false
+        barChart.setFitBars(true)
+        barChart.animateY(1000)
+        barChart.invalidate()
+
     }
 
     fun updateData() {
@@ -87,13 +101,40 @@ class DeviceInformation : AppCompatActivity() {
         textViewHumidity.text = "$humidity%"
     }
 
-    private fun getTemperatureData(): List<Float> {
-        // Отримання даних про температуру за минулий тиждень
-        // Вам потрібно реалізувати цю функцію для отримання даних зі свого джерела
-        // Наприклад, ви можете отримати дані з сервера або зберігати їх локально
+    fun updateDataInChartsTemperature(token : String){
 
-        // Повертаємо прикладові дані (від -10 до 30)
-        return (0..7).map { it.toFloat() * 5 - 10 }
+        val url = "http://192.168.0.192:8080/api/v1/temperature/temperature-statistics/"
+        val requestBody = FormBody.Builder()
+            .add("delay", oneHourTemperatureInformation.toString())
+            .build()
+
+        Log.i("DeviceInformationTemperatyra", "$token")
+        val request = Request.Builder()
+            .url(url)
+            .header("Authorization", "Bearer $token")
+            .post(requestBody)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback{
+            override fun onFailure(call: Call, e: IOException) {
+                runOnUiThread {
+                    e.printStackTrace()
+                    Log.i("DeviceInformationTemperatyra", "${e.message}")
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                if(response.isSuccessful) {
+                    val responseData = response.body?.string()
+                    Log.i("DeviceInformationTemperatyra", "$responseData")
+                }else{
+                    Log.i("DeviceInformationTemperatyra", "Suck2.0")
+                }
+            }
+
+        })
+
     }
+
 
 }
