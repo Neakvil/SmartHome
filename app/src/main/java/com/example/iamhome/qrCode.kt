@@ -32,11 +32,9 @@ class qrCode : AppCompatActivity() {
             val height = bitMatrix.height
             val pixels = IntArray(width * height)
 
-            // Змінити колір фону QR-коду на білий
             val backgroundColor = Color.WHITE
 
-            // Змінити колір пікселів QR-коду на червоний
-            val foregroundColor = Color.parseColor("#FDA43C")
+            val foregroundColor = Color.BLACK
 
             for (y in 0 until height) {
                 val offset = y * width

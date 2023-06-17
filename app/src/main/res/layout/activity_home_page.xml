@@ -76,28 +76,38 @@
         android:layout_weight="8"
         android:orientation="vertical">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewDevices"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="655dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:layout_height="0dp"
+            android:layout_weight="8"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewDevices"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="16dp"
+                android:background="@drawable/round_button"
+                android:text="+"
+                android:textSize="24sp"
+                android:textColor="#FFFFFF" />
+
+        </FrameLayout>
+
 
     </LinearLayout>
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="65dp"
-        android:layout_height="65dp"
-        android:layout_gravity="right"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/round_button"
-        android:text="+"
-        app:layout_constraintBottom_toBottomOf="@+id/recyclerViewDevices"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.48"
-        app:layout_constraintStart_toStartOf="parent" />
 
 </LinearLayout>
