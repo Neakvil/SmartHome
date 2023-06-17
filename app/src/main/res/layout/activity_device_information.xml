@@ -191,7 +191,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="#FDA43C"
                         android:buttonTint="#FDA43C"
-                        android:text="1 hour" />
+                        android:text="@string/one_hour" />
 
                     <RadioButton
                         android:id="@+id/option_two_hour"
@@ -199,7 +199,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="#FDA43C"
                         android:buttonTint="#FDA43C"
-                        android:text="2 Hour" />
+                        android:text="@string/two_hour" />
 
                     <RadioButton
                         android:id="@+id/option_four_hour"
@@ -207,7 +207,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="#FDA43C"
                         android:buttonTint="#FDA43C"
-                        android:text="4 Hour" />
+                        android:text="@string/four_hour" />
 
                     <RadioButton
                         android:id="@+id/option_eight_hour"
@@ -215,7 +215,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="#FDA43C"
                         android:buttonTint="#FDA43C"
-                        android:text="8 Hour" />
+                        android:text="@string/eight_hour" />
 
                 </RadioGroup>
 
@@ -226,10 +226,10 @@
                     android:alpha="1"
                     android:backgroundTint="#FDA43C"
                     android:onClick="readData"
-                    android:text="See in Chart"
+                    android:text="@string/see_in_chart"
                     android:textColor="#000000"
                     android:textStyle="bold"
-                    android:textSize="10dp"
+                    android:textSize="9sp"
                     tools:layout_editor_absoluteX="94dp"
                     tools:layout_editor_absoluteY="306dp" />
 

@@ -35,4 +35,9 @@
     <string name="added">ADDED</string>
     <string name="devicename">Device Name: </string>
     <string name="devicetype">Device Type: </string>
+    <string name="see_in_chart">See in Chart</string>
+    <string name="eight_hour">8 Hour</string>
+    <string name="four_hour">4 Hour</string>
+    <string name="two_hour">2 Hour</string>
+    <string name="one_hour">1 hour</string>
 </resources>

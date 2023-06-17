@@ -81,8 +81,6 @@ class DeviceInformation : AppCompatActivity() {
         }
 
         swipeRefreshLayout.setOnRefreshListener {
-            // Код для оновлення даних
-
             updateData()
 
             // Після завершення оновлення викличте метод setRefreshing(false),
@@ -116,18 +114,16 @@ class DeviceInformation : AppCompatActivity() {
 
     fun updateData() {
 
-        val random = Random()
-        val temperature = random.nextInt(50).toString()
-        val humidity = random.nextInt(20).toString()
-
         val textViewTemperature = findViewById<TextView>(R.id.textViewTemperature)
         val textViewHumidity = findViewById<TextView>(R.id.textViewHumidity)
 
-        textViewTemperature.text = "$temperature°"
-        textViewHumidity.text = "$humidity%"
+        textViewTemperature.text = "20°"
+        textViewHumidity.text = "45%"
     }
 
     fun updateDataInChartsHumidity(token : String, url : String, delay : Int){
+
+        val textViewHumidity = findViewById<TextView>(R.id.textViewHumidity)
 
         val requestBody = FormBody.Builder()
             .add("delay", delay.toString())
@@ -153,16 +149,23 @@ class DeviceInformation : AppCompatActivity() {
                     val responseData = response.body?.string()
                     val jsonObject = JSONObject(responseData)
                     Log.i("DeviceInformationHumidity", "$responseData")
-                    val temperatures = jsonObject.getJSONArray("humidity")
+                    val humiditys = jsonObject.getJSONArray("humidity")
 
                     runOnUiThread {
                         barChart.data = null
                         val entries = ArrayList<BarEntry>()
-                        for (i in 0 until temperatures.length()) {
-                            val temperatureJson = temperatures.getJSONObject(i)
-                            val temperatureString = temperatureJson.getString("humidity")
-                            val temperature = temperatureString.toFloat()
+                        for (i in 0 until humiditys.length()) {
+                            val humidityJson = humiditys.getJSONObject(i)
+                            val humidityString = humidityJson.getString("humidity")
+                            val temperature = humidityString.toFloat()
                             entries.add(BarEntry(i.toFloat(), temperature))
+                        }
+
+                        if (entries.isNotEmpty()) {
+                            val lastHumidity = entries.last()
+                            textViewHumidity.text = "${lastHumidity.y.toString()}%"
+                        } else {
+                            textViewHumidity.text = "0%"
                         }
 
                         val dataSet = BarDataSet(entries, "Вологість")
@@ -184,7 +187,9 @@ class DeviceInformation : AppCompatActivity() {
                         rightYAxis.textColor = Color.parseColor("#FDA43C")
 
                         // Налаштування графіку
-                        barChart.description.isEnabled = false
+                        barChart.description.text = "Humidity"
+                        barChart.description.textColor = Color.RED
+                        barChart.description.textSize = 20F
                         barChart.setFitBars(true)
                         barChart.animateY(1000)
                         barChart.invalidate()
@@ -200,6 +205,8 @@ class DeviceInformation : AppCompatActivity() {
     }
 
     fun updateDataInChartsTemperature(token : String, url : String, delay : Int){
+
+        val textViewTemperature = findViewById<TextView>(R.id.textViewTemperature)
 
         val requestBody = FormBody.Builder()
             .add("delay", delay.toString())
@@ -236,6 +243,13 @@ class DeviceInformation : AppCompatActivity() {
                             entries.add(BarEntry(i.toFloat(), temperature))
                         }
 
+                        if (entries.isNotEmpty()) {
+                            val lastTemperature = entries.last()
+                            textViewTemperature.text = "${lastTemperature.y.toString()}°"
+                        } else {
+                            textViewTemperature.text = "0°"
+                        }
+
                         val dataSet = BarDataSet(entries, "Температура")
                         dataSet.color = Color.parseColor("#FDA43C")
                         dataSet.valueTextColor = Color.parseColor("#FDA43C")
@@ -255,7 +269,9 @@ class DeviceInformation : AppCompatActivity() {
                         rightYAxis.textColor = Color.parseColor("#FDA43C")
 
                         // Налаштування графіку
-                        barChart.description.isEnabled = false
+                        barChart.description.text = "Temperature"
+                        barChart.description.textColor = Color.RED
+                        barChart.description.textSize = 20F
                         barChart.setFitBars(true)
                         barChart.animateY(1000)
                         barChart.invalidate()
