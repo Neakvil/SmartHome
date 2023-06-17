@@ -96,6 +96,7 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/linearLayoutTemperature"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -129,6 +130,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/linearLayoutHumidity"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -168,10 +170,84 @@
             android:orientation="vertical"
             tools:ignore="MissingClass">
 
-            <com.github.mikephil.charting.charts.BarChart
-                android:id="@+id/barChart"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <RadioGroup
+                    android:id="@+id/time_options"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkedButton="@id/option_one_hour"
+                    android:orientation="horizontal"
+                    android:textColor="#FDA43C"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <RadioButton
+                        android:id="@+id/option_one_hour"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#FDA43C"
+                        android:buttonTint="#FDA43C"
+                        android:text="1 hour" />
+
+                    <RadioButton
+                        android:id="@+id/option_two_hour"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#FDA43C"
+                        android:buttonTint="#FDA43C"
+                        android:text="2 Hour" />
+
+                    <RadioButton
+                        android:id="@+id/option_four_hour"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#FDA43C"
+                        android:buttonTint="#FDA43C"
+                        android:text="4 Hour" />
+
+                    <RadioButton
+                        android:id="@+id/option_eight_hour"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#FDA43C"
+                        android:buttonTint="#FDA43C"
+                        android:text="8 Hour" />
+
+                </RadioGroup>
+
+                <Button
+                    android:id="@+id/buttonChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:alpha="1"
+                    android:backgroundTint="#FDA43C"
+                    android:onClick="readData"
+                    android:text="See in Chart"
+                    android:textColor="#000000"
+                    android:textStyle="bold"
+                    android:textSize="10dp"
+                    tools:layout_editor_absoluteX="94dp"
+                    tools:layout_editor_absoluteY="306dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="7"
+                android:orientation="horizontal">
+
+
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/barChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
